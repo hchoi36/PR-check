@@ -23,7 +23,7 @@ jobs:
 
       - name: Check Snyk IaC test results
         run: |
-          snyk iac test --json --all-projects > snyk_iac_results.json
+          snyk iac test --json > snyk_iac_results.json
           test_result=$(jq '.vulnerabilities | length' snyk_iac_results.json)
           if [ "$test_result" -eq 0 ]; then
             echo "Snyk IaC test passed"
