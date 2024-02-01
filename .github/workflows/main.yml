@@ -16,18 +16,7 @@ jobs:
         run: npm install -g snyk
       
       - name: Authenticate Snyk CLI
-        run: snyk auth de3b76f5-2390-499a-932b-05c93afa936e
+        run: snyk auth ${{ secrets.SNYK_TOKEN }}
 
       - name: Run Snyk IaC test
         run: snyk iac test 
-
-      - name: Check Snyk IaC test results
-        run: |
-          snyk iac test --json > snyk_iac_results.json
-          test_result=$(jq '.vulnerabilities | length' snyk_iac_results.json)
-          if [ "$test_result" -eq 0 ]; then
-            echo "Snyk IaC test passed"
-          else
-            echo "Snyk IaC test failed with $test_result vulnerabilities found"
-            exit 1
-          fi
