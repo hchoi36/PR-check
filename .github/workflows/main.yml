@@ -1,0 +1,33 @@
+name: Snyk IaC Test
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  snyk_iac_test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Snyk CLI
+        run: npm install -g snyk
+      
+      - name: Authenticate Snyk CLI
+        run: snyk auth de3b76f5-2390-499a-932b-05c93afa936e
+
+      - name: Run Snyk IaC test
+        run: snyk iac test 
+
+      - name: Check Snyk IaC test results
+        run: |
+          snyk iac test --json > snyk_iac_results.json
+          test_result=$(jq '.ok' snyk_iac_results.json)
+          if [ "$test_result" = true ]; then
+            echo "Snyk IaC test passed"
+          else
+            echo "Snyk IaC test failed"
+            exit 1
+          fi
